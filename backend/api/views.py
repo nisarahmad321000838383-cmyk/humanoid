@@ -401,6 +401,12 @@ class AdminUserViewSet(viewsets.ModelViewSet):
     Only the super admin can edit/delete other accounts (including password and email).
     """
 
+    serializer_class = AdminUserSerializer
+    permission_classes = [IsSuperAdmin]
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        return User.objects.all().order_by('-date_joined')
 
 class UploadedFileViewSet(viewsets.ModelViewSet):
     """Allow authenticated users to upload, list and delete their files.
@@ -435,12 +441,7 @@ class UploadedFileViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
-    serializer_class = AdminUserSerializer
-    permission_classes = [IsSuperAdmin]
-    queryset = User.objects.all()
     
-    def get_queryset(self):
-        return User.objects.all().order_by('-date_joined')
 
 
 class AdminChatViewSet(viewsets.ModelViewSet):
